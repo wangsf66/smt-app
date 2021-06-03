@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+<property supportCover="true" supportDelete="true" extendExpr="{'type':2,'params':['SORT','CODE','ICON','NAME','LEVEL','REMARK','PARENT_ID','STATUS','I18N','ID']}"/>
+<sql namespace="UPDATE_SMT_MENU_ITEM">
+<content name="cfa77f2f-5dc2-403f-9638-cf424c11cfd4" type="declare">
+DECLARE @ID CHAR(36)
+DECLARE @NAME NVARCHAR(50)
+DECLARE @ICON VARCHAR(50)
+DECLARE @I18N VARCHAR(50)
+DECLARE @LEVEL INT
+DECLARE @SORT INT
+DECLARE @STATUS INT
+DECLARE @CODE VARCHAR(50)
+DECLARE @REMARK NVARCHAR(200)
+DECLARE @PARENT_ID CHAR(36)
+
+SET @ID = $ID$
+SET @NAME = $NAME$
+SET @ICON = $ICON$
+SET @I18N = $I18N$
+SET @LEVEL = $LEVEL$
+SET @SORT = $SORT$
+SET @CODE = $CODE$
+SET @STATUS = $STATUS$
+SET @REMARK = $REMARK$
+SET @PARENT_ID = $PARENT_ID$
+
+IF @LEVEL = 1 OR @LEVEL = 2 /* 判断更新节点未1或者2级别 */
+BEGIN
+	UPDATE SMT_MENU SET
+	MENU_NAME = @NAME,
+	MENU_ICON = @ICON,
+	MENU_I18N = @I18N,
+	MENU_SORT = @SORT,
+	MENU_STATUS = @STATUS,
+	MENU_CODE = @CODE,
+	MENU_REMARK = @REMARK
+	WHERE ID = @ID
+END
+
+ELSE IF @LEVEL = 3
+BEGIN
+	DECLARE @LV INT
+	SELECT TOP 1 
+		@LV = MENU_LEVEL 
+	FROM SMT_MENU WITH (NOLOCK) 
+	WHERE ID = @PARENT_ID
+	
+	IF @LV = 2 /* 判断父节点有变化*/
+	BEGIN
+		UPDATE SMT_MENU SET
+		MENU_NAME = @NAME,
+		MENU_ICON = @ICON,
+		MENU_I18N = @I18N,
+		MENU_SORT = @SORT,
+		MENU_STATUS = @STATUS,
+		MENU_CODE = @CODE,
+		MENU_REMARK = @REMARK,
+		MENU_PARENT_ID = @PARENT_ID
+		WHERE ID = @ID
+	END
+	ELSE IF @LV = @PARENT_ID /*判断父节点无变化*/
+	BEGIN
+		UPDATE SMT_MENU SET
+		MENU_NAME = @NAME,
+		MENU_ICON = @ICON,
+		MENU_I18N = @I18N,
+		MENU_SORT = @SORT,
+		MENU_STATUS = @STATUS,
+		MENU_CODE = @CODE,
+		MENU_REMARK = @REMARK
+		WHERE ID = @ID
+	END
+END
+</content>
+</sql>
+<validators>
+<validator name="SORT"  com.smartone.ex.validators.IsNullValidator="true" /> 
+<validator name="CODE"  com.smartone.ex.validators.IsNullValidator="true" /> 
+<validator name="ICON"  com.smartone.ex.validators.IsNullValidator="true" /> 
+<validator name="NAME"  com.smartone.ex.validators.IsNullValidator="true" /> 
+<validator name="LEVEL"  com.smartone.ex.validators.IsNullValidator="true" /> 
+<validator name="REMARK"  com.smartone.ex.validators.IsNullValidator="true" /> 
+<validator name="PARENT_ID"  com.smartone.ex.validators.IsNullValidator="true" /> 
+<validator name="STATUS"  com.smartone.ex.validators.IsNullValidator="true" /> 
+<validator name="I18N"  com.smartone.ex.validators.IsNullValidator="true" /> 
+<validator name="ID"  com.smartone.ex.validators.IsNullValidator="true" /> 
+</validators>
+</mapping-configuration>

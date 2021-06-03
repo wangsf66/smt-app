@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration id="smt-operation">
+	<environment>
+        <property name="globalCreateMode" value="dynamic" />
+        <mapping>
+            <sql parameterPrefix="$" parameterSuffix="$" parameterSplit="|" parameterDefaultValueHandler="com.smt.app.util.SqlRescourceDefaultValue" />
+            <register class="com.smt.app.config.resource.business.parse.busimodel.BusiModelMappingType" />
+            <scanner path="mapper" scanAll="true"/>
+            <scanner path="mappings" scanAll="true"/>
+        </mapping>
+	</environment>
+</configuration>

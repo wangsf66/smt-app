@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+<property  supportCover="false" supportDelete="false" extend="{'type':2,'params':['resourceId']}"/>
+<sql namespace="GET_DM_RESOURCE_PARAMS_LIST">
+<content name="f446e336-7756-48dc-a904-f2147adaafeb" type="select">
+SELECT 
+ NEWID() AS ID,
+ T.PARAM_NAME,
+ T.DESC_NAME
+FROM(SELECT PARAM_NAME,DESC_NAME,COUNT(1) AS NUM FROM DM_RESOURCE_PARAMS
+WHERE RESOURCE_ID IN(SELECT [VALUE] FROM f_split($resourceId$,','))
+GROUP BY PARAM_NAME,DESC_NAME) T
+WHERE T.NUM=(SELECT COUNT(1) FROM f_split($resourceId$,','))
+</content>
+</sql>
+<validators>
+<validator name="resourceId"  enableNotNull="true" enableDataType="true"  /> 
+</validators>
+</mapping-configuration>

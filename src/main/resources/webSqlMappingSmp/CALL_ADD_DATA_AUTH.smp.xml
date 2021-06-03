@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+	<property  supportCover="false" supportDelete="false" extend="{'type'1,'results'[],'params'['AUTH_ALLOW','RELATION_IDS','MESSAGE_TYPE','CREATE_USER_ID','AUTH_IDEN','TENANT_ID','PROJECT_CODE','AFFERENT_ID','W_ALLOW','R_ALLOW','MESSAGE','CREATE_DATE']}" />
+	<sql namespace="CALL_ADD_DATA_AUTH">
+		<content name="8c1604c0-56b6-49d9-b68a-9043763d9473" type="procedure">
+			{call ADD_DATA_AUTH(
+				$AFFERENT_ID|dbType=VARCHAR|length=36|mode=in|nullable=true$,
+				$RELATION_IDS|dbType=VARCHAR|length=200|mode=in|nullable=true$,
+				$CREATE_USER_ID|dbType=CHAR|defaultValue=_userId|mode=in|nullable=true$,
+				$CREATE_DATE|defaultValue=_currentTime|dbType=DATETIME|mode=in|nullable=true$,
+				$PROJECT_CODE|dbType=VARCHAR|defaultValue=_projectCode|mode=in|nullable=true$,
+				$TENANT_ID|dbType=CHAR|defaultValue=_tenantId|mode=in|nullable=true$,
+				$AUTH_IDEN|dbType=VARCHAR|length=20|mode=in|nullable=true$,$R_ALLOW|dbType=INT|mode=out|nullable=false$,
+				$W_ALLOW|dbType=INT|mode=out|nullable=false$,
+				$AUTH_ALLOW|dbType=INT|mode=out|nullable=false$,
+				$MESSAGE|dbType=VARCHAR|length=50|mode=out|nullable=false$,
+				$MESSAGE_TYPE|dbType=VARCHAR|length=20|mode=out|nullable=false$)}
+		</content>
+	</sql>
+</mapping-configuration>

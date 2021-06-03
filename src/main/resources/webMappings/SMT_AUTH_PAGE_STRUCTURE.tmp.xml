@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+	<table name="SMT_AUTH_PAGE_STRUCT" createMode="create" strict="true">
+		<columns>
+			<column name="ID" dataType="char" length="36" />
+			<column name="CREATE_USER_ID" dataType="char" length="36" nullable="false" />
+			<column name="CREATE_DATE" dataType="datetime" nullable="false" />
+			<column name="PROJECT_CODE" dataType="string" length="50" nullable="false" />
+			<column name="TENANT_ID" dataType="char" length="36" nullable="false" />
+
+			<column name="AUPAST_ORDER" dataType="number" length="4"  nullable="true"/>
+			<column name="AUPAST_AUTH_ALLOW" dataType="number" length="1"  nullable="true"/>
+			<column name="AUPAST_R_ALLOW" dataType="number" length="1"  nullable="true"/>
+			<column name="AUPAST_TYPE" dataType="string" length="30"  nullable="true"/>
+			<column name="AUPAST_PAGE_ID" dataType="string" length="36"  nullable="true"/>
+			<column name="AUPAST_R_NOT_ALLOW" dataType="number" length="1"  nullable="true"/>
+			<column name="AUPAST_ENABLE_PERMISSION" dataType="number" length="1"  nullable="true"/>
+			<column name="AUPE_ID" dataType="string" length="36"  nullable="true"/>
+			<column name="AUPAST_REF_OBJ_ID" dataType="string" length="100"  nullable="true"/>
+			<column name="AUPAST_WEIGHT" dataType="number" length="4"  nullable="true"/>
+			<column name="AUPAST_AUTH_TYPE" dataType="string" length="30"  nullable="true"/>
+			<column name="AUPAST_W_NOT_ALLOW" dataType="number" length="1"  nullable="true"/>
+			<column name="AUPAST_AUTH_NOT_ALLOW" dataType="number" length="1"  nullable="true"/>
+			<column name="AUPAST_REF_COMP_ID" dataType="string" length="36"  nullable="true"/>
+			<column name="AUPAST_MENU_ID" dataType="string" length="36"  nullable="true"/>
+			<column name="AUPAST_W_ALLOW" dataType="number" length="1"  nullable="true"/>
+			<column name="AUPAST_MAIN_PAGE_ID" dataType="string" length="36"  nullable="true"/>
+			<column name="AUPAST_STATE" dataType="number" length="1"  nullable="true"/>
+		</columns>
+		<constraints>
+			<constraint type="PRIMARY_KEY"> 
+				<column name="ID" /> 
+			</constraint> 
+		</constraints>
+	</table>
+</mapping-configuration>

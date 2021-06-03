@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+	 <table name="DM_RESOURCE_MAPPING" class="com.smt.app.config.resource.general.entity.DmResourceMapping" strict="true">
+		<columns>
+			<column name="ID" dataType="char" length="36" />
+		   	<column name="CREATE_USER_ID" dataType="char" length="36" nullable="false" />
+		   	<column name="CREATE_DATE" dataType="datetime" nullable="false" />
+		   	<column name="PROJECT_CODE" dataType="string" length="50" nullable="false" />
+		   	<column name="TENANT_ID" dataType="char" length="36" nullable="false" />
+			
+			<column name="resource_id" property="resourceId" description="关联的资源id" dataType="char" length="36" />	
+			<column name="resource_name" property="resourceName" description="资源名" dataType="string" length="100" nullable="false" />
+			<column name="mapping_content" property="mappingContent" description="映射内容" dataType="clob"  />
+		    <column name="resource_type" property="resourceType" description="资源类型" dataType="number" length="1" />
+		    <column name="is_failure" property="isFailure" description="是否有效"  dataType="number" length="1" />
+		</columns>
+		<constraints>
+			<constraint type="PRIMARY_KEY">
+				<column name="id" />
+			</constraint>
+		</constraints>
+	</table>
+</mapping-configuration>  

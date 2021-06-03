@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+<property  supportCover="false" supportDelete="false" extend="{'type':2,'params':[]}"/>
+<sql namespace="GET_BUSINESS_MAIN_LIST">
+<content name="d72f2127-8a19-4c75-ad48-23ac48462eaf" type="select">
+SELECT 
+    ID,
+    RESOURCE_NAME,
+    RESOURCE_TYPE,
+    DESC_NAME,
+    CREATE_MODEL,
+    IS_BUILD_MODEL,
+    CASE IS_BUILD_MODEL WHEN 0 THEN '无' WHEN 1 THEN '已建模' END AS IS_BUILD_MODEL_TEXT,
+    CREATE_DATE,
+    CASE IS_BUILD_MODEL WHEN 0 THEN 50 WHEN 1 THEN 100 END AS P_PERCENT, 
+    CASE IS_BUILD_MODEL WHEN 0 THEN 'active' WHEN 1 THEN 'success' WHEN NULL THEN 'exception' END AS P_STATUS,
+    '进度' AS P_TITLE,
+    FUNC_CODE 
+FROM DM_RESOURCE
+</content>
+</sql>
+</mapping-configuration>

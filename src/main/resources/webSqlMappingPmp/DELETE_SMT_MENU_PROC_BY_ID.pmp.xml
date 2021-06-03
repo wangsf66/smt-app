@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+<property supportCover="true" supportDelete="true" extendExpr="{'type':1}" /><procedure name="DELETE_SMT_MENU_PROC_BY_ID" >
+<![CDATA[ /* 删除菜单项 */
+CREATE PROC DELETE_SMT_MENU_PROC_BY_ID
+@ID CHAR(36),
+@LEVEL INT,
+@MESSAGE NVARCHAR(50) OUTPUT,
+@MESSAGE_TYPE NVARCHAR(10) OUTPUT
+AS
+BEGIN
+	IF @LEVEL = 1
+	BEGIN
+	    /* 判断是否存在子菜单项 */
+		IF NOT EXISTS (SELECT TOP 1 1 FROM SMT_MENU WITH (NOLOCK) WHERE MENU_PARENT_ID = @ID)
+		BEGIN
+			DELETE TOP (1) FROM SMT_MENU WHERE ID = @ID
+			SET @MESSAGE = '删除成功!'
+			SET @MESSAGE_TYPE = 'success'
+		END
+		ELSE 
+		BEGIN
+			SET @MESSAGE = '删除失败，当前模块下存在菜单项，无法删除该模块!'
+			SET @MESSAGE_TYPE = 'warning'
+		END
+	END
+	IF @LEVEL = 2
+	BEGIN
+	    /* 判断是否存在子菜单项 */
+		IF NOT EXISTS (SELECT TOP 1 1 FROM SMT_MENU WITH (NOLOCK) WHERE MENU_PARENT_ID = @ID)
+		BEGIN
+			DELETE TOP (1) FROM SMT_MENU WHERE ID = @ID
+			SET @MESSAGE = '删除成功!'
+			SET @MESSAGE_TYPE = 'success'
+		END
+		ELSE 
+		BEGIN
+			SET @MESSAGE = '删除失败，当前模块下存在菜单项，无法删除该模块!'
+			SET @MESSAGE_TYPE = 'warning'
+		END
+	END
+
+
+	ELSE IF @LEVEL = 3
+	BEGIN
+		DELETE TOP (1) FROM SMT_MENU WHERE ID = @ID
+		SET @MESSAGE = '删除成功!'
+		SET @MESSAGE_TYPE = 'success'
+	END
+END]]></procedure>
+</mapping-configuration>

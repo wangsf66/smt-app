@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+	<property  supportCover="false" supportDelete="false" extend="{'type':1,'results':[],'params':['AUPE_ID','SYS_AUTH_PAGE_ID','CREATE_DATE','MESSAGE_TYPE','LAYOUT_ID','AUPE_AUTH_TYPE','AUPE_PERMISSION_TYPE','PROJECT_CODE','MESSAGE','CREATE_USER_ID','AUTH_TYPE','TENANT_ID','AUPE_PERMISSION_CONTENT','MENU_ID']}" />
+	<sql namespace="CALL_SET_SYS_AUTH_PAGE_PROC">
+		<content name="8dbeb39c-7ccb-4979-8a7c-52df83cacdc4" type="procedure">
+			{call SET_SYS_AUTH_PAGE_PROC(
+				$SYS_AUTH_PAGE_ID|dbType=VARCHAR|length=36|mode=in|nullable=true$,
+				$MENU_ID|dbType=VARCHAR|length=36|mode=in|nullable=true$,
+				$AUPE_AUTH_TYPE|dbType=VARCHAR|length=10|mode=in|nullable=true$,
+				$AUTH_TYPE|dbType=INT|mode=in|nullable=true$,
+				$AUPE_ID|dbType=VARCHAR|length=36|mode=in|nullable=true$,
+				$LAYOUT_ID|dbType=VARCHAR|length=36|mode=in|nullable=true$,
+				$AUPE_PERMISSION_TYPE|dbType=VARCHAR|length=10|mode=in|nullable=true$,
+				$AUPE_PERMISSION_CONTENT|dbType=VARCHAR|length=50|mode=in|nullable=true$,
+				$MESSAGE|dbType=VARCHAR|length=200|mode=out|nullable=false$,
+				$MESSAGE_TYPE|dbType=VARCHAR|length=10|mode=out|nullable=false$,
+				$CREATE_USER_ID|dbType=CHAR|defaultValue=_userId|mode=in|nullable=true$,
+				$CREATE_DATE|defaultValue=_currentTime|dbType=DATETIME|mode=in|nullable=true$,
+				$TENANT_ID|dbType=CHAR|defaultValue=_tenantId|mode=in|nullable=true$,
+				$PROJECT_CODE|dbType=VARCHAR|defaultValue=_projectCode|mode=in|nullable=true$)}
+		</content>
+	</sql>
+</mapping-configuration>

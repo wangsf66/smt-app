@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+	<property  supportCover="false" supportDelete="false" extend="{'type':1}" />
+	<procedure name="DEL_MENU_PAGE_REL_PROC" >
+		<![CDATA[ 
+			CREATE PROC DEL_MENU_PAGE_REL_PROC
+				@ID VARCHAR(36),
+				@MESSAGE VARCHAR(200) OUTPUT,
+				@MESSAGE_TYPE VARCHAR(10) OUTPUT
+			AS
+			BEGIN
+				IF EXISTS (SELECT TOP 1 1 FROM SMT_MENU_PAGE_REL WITH (NOLOCK) WHERE ID = @ID)
+				BEGIN
+					IF EXISTS(SELECT TOP 1 1 FROM SMT_MENU_PAGE_REL WITH (NOLOCK) WHERE PARENT_ID = @ID)
+					BEGIN
+						/* 包含子节点，无法删除 */
+						SET @MESSAGE = '当前数据存在其他的数据引用， 无法删除'
+						SET @MESSAGE_TYPE = 'warning'
+					END
+					ELSE
+					BEGIN
+						/* 不含子节点， 可以删除 */
+						DELETE TOP (1) FROM SMT_MENU_PAGE_REL WHERE ID = @ID
+						SET @MESSAGE = '数据删除成功！'
+						SET @MESSAGE_TYPE = 'success'
+					END
+				END
+			END
+		]]>
+	</procedure>
+</mapping-configuration>

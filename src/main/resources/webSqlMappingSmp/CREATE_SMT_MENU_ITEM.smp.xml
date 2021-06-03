@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+<property supportCover="true" supportDelete="true" extend="{'type':2,'params':['LAST_UPDATE_USER_ID','PARENT_ID','REMARK','CREATE_USER_ID','STATUS','PROJECT_ID','CUSTOMER_ID','NAME','LAST_UPDATE_DATE','ICON','I18N','LEVEL','CREATE_DATE','CODE','SORT','ID']}"/>
+<sql namespace="CREATE_SMT_MENU_ITEM">
+<content name="e5584779-898b-4334-bcc9-e1ca931a4b87" type="declare">
+DECLARE @ID CHAR(36)
+DECLARE @NAME NVARCHAR(50)
+DECLARE @ICON VARCHAR(50)
+DECLARE @I18N VARCHAR(50)
+DECLARE @LEVEL INT
+DECLARE @SORT INT
+DECLARE @STATUS INT
+DECLARE @CODE VARCHAR(50)
+DECLARE @REMARK NVARCHAR(200)
+DECLARE @PARENT_ID CHAR(36)
+
+
+SET @ID = $ID$
+SET @NAME = $NAME$
+SET @ICON = $ICON$
+SET @I18N = $I18N$
+SET @LEVEL = $LEVEL$
+SET @SORT = $SORT$
+SET @CODE = $CODE$
+SET @STATUS = $STATUS$
+SET @REMARK = $REMARK$
+SET @PARENT_ID = $PARENT_ID$ 
+
+
+
+DECLARE @NEW_ID CHAR(36) = @ID
+IF @PARENT_ID IS NULL
+BEGIN	
+	/** 插入菜单根节点 **/
+	INSERT INTO SMT_MENU 
+	(
+		ID,
+		MENU_NAME,
+		MENU_CODE,
+		MENU_LEVEL,
+		MENU_I18N,
+		MENU_SORT,
+		MENU_STATUS,
+		MENU_REMARK,
+		MENU_PARENT_ID,
+		CREATE_USER_ID,
+		LAST_UPDATE_USER_ID,
+		CREATE_DATE,
+		LAST_UPDATE_DATE,
+		PROJECT_ID,
+		CUSTOMER_ID
+	)
+	VALUES
+	(
+		@NEW_ID,
+		@NAME,
+		@CODE,
+		@LEVEL,
+		@I18N,
+		@SORT,
+		@STATUS,
+		@REMARK,
+		@PARENT_ID,
+		$CREATE_USER_ID|defaultValue=_accountId|nullable=true|dataType=string$,
+		$LAST_UPDATE_USER_ID|defaultValue=_accountId|nullable=true|dataType=string$,
+		$CREATE_DATE|defaultValue=_currentTime|nullable=true|dataType=datetime$,
+		$LAST_UPDATE_DATE|defaultValue=_currentTime|nullable=true|dataType=datetime$,
+		$PROJECT_ID|defaultValue=_projectId|nullable=true|dataType=string$,
+		$CUSTOMER_ID|defaultValue=_customerId|nullable=true|dataType=string$
+	)
+	/** 插入管理分类 **/
+	INSERT INTO SMT_MENU 
+	(
+		ID,MENU_NAME,MENU_CODE,MENU_LEVEL,MENU_I18N,MENU_SORT,MENU_STATUS,MENU_REMARK,MENU_PARENT_ID,CREATE_USER_ID,
+		LAST_UPDATE_USER_ID,
+		CREATE_DATE,
+		LAST_UPDATE_DATE,
+		PROJECT_ID,
+		CUSTOMER_ID
+	)
+	VALUES
+	(
+		NEWID(),'管理','MANAGE',2,'system.manage',1,2,NULL,@NEW_ID,$CREATE_USER_ID|defaultValue=_accountId|nullable=true|dataType=string$,$LAST_UPDATE_USER_ID|defaultValue=_accountId|nullable=true|dataType=string$,$CREATE_DATE|defaultValue=_currentTime|nullable=true|dataType=datetime$,$LAST_UPDATE_DATE|defaultValue=_currentTime|nullable=true|dataType=datetime$,$PROJECT_ID|defaultValue=_projectId|nullable=true|dataType=string$,$CUSTOMER_ID|defaultValue=_customerId|nullable=true|dataType=string$
+	)
+	/** 插入业务分类 **/
+	INSERT INTO SMT_MENU 
+	(
+		ID,MENU_NAME,MENU_CODE,MENU_LEVEL,MENU_I18N,MENU_SORT,MENU_STATUS,MENU_REMARK,MENU_PARENT_ID,CREATE_USER_ID,
+		LAST_UPDATE_USER_ID,
+		CREATE_DATE,
+		LAST_UPDATE_DATE,
+		PROJECT_ID,
+		CUSTOMER_ID
+	)
+	VALUES
+	(
+		NEWID(),'业务','BUSINESS',2,'system.business',2,2,NULL,@NEW_ID,$CREATE_USER_ID|defaultValue=_accountId|nullable=true|dataType=string$,$LAST_UPDATE_USER_ID|defaultValue=_accountId|nullable=true|dataType=string$,$CREATE_DATE|defaultValue=_currentTime|nullable=true|dataType=datetime$,$LAST_UPDATE_DATE|defaultValue=_currentTime|nullable=true|dataType=datetime$,$PROJECT_ID|defaultValue=_projectId|nullable=true|dataType=string$,$CUSTOMER_ID|defaultValue=_customerId|nullable=true|dataType=string$
+	)
+	/** 插入报表分类 **/
+	INSERT INTO SMT_MENU 
+	(
+		ID,MENU_NAME,MENU_CODE,MENU_LEVEL,MENU_I18N,MENU_SORT,MENU_STATUS,MENU_REMARK,MENU_PARENT_ID,CREATE_USER_ID,
+		LAST_UPDATE_USER_ID,
+		CREATE_DATE,
+		LAST_UPDATE_DATE,
+		PROJECT_ID,
+		CUSTOMER_ID
+	)
+	VALUES
+	(
+		NEWID(),'报表','REPORT',2,'system.report',3,2,NULL,@NEW_ID,$CREATE_USER_ID|defaultValue=_accountId|nullable=true|dataType=string$,$LAST_UPDATE_USER_ID|defaultValue=_accountId|nullable=true|dataType=string$,$CREATE_DATE|defaultValue=_currentTime|nullable=true|dataType=datetime$,$LAST_UPDATE_DATE|defaultValue=_currentTime|nullable=true|dataType=datetime$,$PROJECT_ID|defaultValue=_projectId|nullable=true|dataType=string$,$CUSTOMER_ID|defaultValue=_customerId|nullable=true|dataType=string$
+	)
+
+
+END
+ELSE IF @PARENT_ID IS NOT NULL AND @LEVEL = 3
+BEGIN
+	INSERT INTO SMT_MENU 
+	(
+		ID,
+		MENU_NAME,
+		MENU_CODE,
+		MENU_LEVEL,
+		MENU_I18N,
+		MENU_SORT,
+		MENU_STATUS,
+		MENU_REMARK,
+		MENU_PARENT_ID,
+		CREATE_USER_ID,
+		LAST_UPDATE_USER_ID,
+		CREATE_DATE,
+		LAST_UPDATE_DATE,
+		PROJECT_ID,
+		CUSTOMER_ID
+	)
+	VALUES
+	(
+		@NEW_ID,
+		@NAME,
+		@CODE,
+		@LEVEL,
+		@I18N,
+		@SORT,
+		@STATUS,
+		@REMARK,
+		@PARENT_ID,
+		$CREATE_USER_ID|defaultValue=_accountId|nullable=true|dataType=string$,
+		$LAST_UPDATE_USER_ID|defaultValue=_accountId|nullable=true|dataType=string$,
+		$CREATE_DATE|defaultValue=_currentTime|nullable=true|dataType=datetime$,
+		$LAST_UPDATE_DATE|defaultValue=_currentTime|nullable=true|dataType=datetime$,
+		$PROJECT_ID|defaultValue=_projectId|nullable=true|dataType=string$,
+		$CUSTOMER_ID|defaultValue=_customerId|nullable=true|dataType=string$
+	)
+END
+</content>
+</sql>
+<validators>
+<validator name="LAST_UPDATE_USER_ID"  com.smartone.ex.validators.IsNullValidator="true" /> 
+<validator name="PARENT_ID"  com.smartone.ex.validators.IsNullValidator="true" /> 
+<validator name="REMARK"  com.smartone.ex.validators.IsNullValidator="true" /> 
+<validator name="CREATE_USER_ID"  com.smartone.ex.validators.IsNullValidator="true" /> 
+<validator name="STATUS"  com.smartone.ex.validators.IsNullValidator="true" /> 
+<validator name="PROJECT_ID"  com.smartone.ex.validators.IsNullValidator="true" /> 
+<validator name="CUSTOMER_ID"  com.smartone.ex.validators.IsNullValidator="true" /> 
+<validator name="NAME"  com.smartone.ex.validators.IsNullValidator="true" /> 
+<validator name="LAST_UPDATE_DATE"  com.smartone.ex.validators.IsNullValidator="true" /> 
+<validator name="ICON"  com.smartone.ex.validators.IsNullValidator="true" /> 
+<validator name="I18N"  com.smartone.ex.validators.IsNullValidator="true" /> 
+<validator name="LEVEL"  com.smartone.ex.validators.IsNullValidator="true" /> 
+<validator name="CREATE_DATE"  com.smartone.ex.validators.IsNullValidator="true" /> 
+<validator name="CODE"  com.smartone.ex.validators.IsNullValidator="true" /> 
+<validator name="SORT"  com.smartone.ex.validators.IsNullValidator="true" /> 
+<validator name="ID"  com.smartone.ex.validators.IsNullValidator="true" /> 
+</validators>
+</mapping-configuration>

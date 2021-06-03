@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+<property  supportCover="false" supportDelete="false" extend="{'type':2,'params':[]}"/>
+<sql namespace="GET_DATA_MODELING_TABLE">
+<content name="f13eb41b-dd35-4f4c-a846-7a3e3f1f0a85" type="select">
+SELECT 
+    A.ID,
+    A.RESOURCE_NAME,
+    A.IS_BUILD_MODEL,
+    CASE A.IS_BUILD_MODEL WHEN 0 THEN '无' WHEN 1 THEN '已建模' WHEN '2' THEN '重新建模' END as BUILD_MODEL_TEXT,
+    A.DESC_NAME,
+    A.FUNC_CODE,
+    A.CREATE_MODEL,
+    A.CREATE_DATE,
+    CASE A.IS_BUILD_MODEL WHEN 0 THEN 50 WHEN 1 THEN 100 END as P_PERCENT, 
+    CASE A.IS_BUILD_MODEL WHEN 0 THEN 'active' WHEN 1 THEN 'success' WHEN NULL THEN 'exception' END as P_STATUS,
+    '进度' AS P_TITLE
+FROM DM_RESOURCE A 
+</content>
+</sql>
+</mapping-configuration>

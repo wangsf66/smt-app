@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+<property supportCover="true" supportDelete="true" extendExpr="{'type':1,'results':[],'params':['MESSAGE','ID','MESSAGE_TYPE']}" /><sql namespace="CALL_DEL_MENU_PAGE_REL_PROC">
+<content name="6b29462e-0054-402d-8fe1-3ccb61abf455" type="procedure">
+{call DEL_MENU_PAGE_REL_PROC($ID|dbType=VARCHAR|length=36|mode=in|nullable=true$,$MESSAGE|dbType=VARCHAR|length=200|mode=out|nullable=false$,$MESSAGE_TYPE|dbType=VARCHAR|length=10|mode=out|nullable=false$)}</content>
+</sql>
+</mapping-configuration>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+	<table name="SMT_AUTH_DATA" createMode="create" strict="true">
+		<columns>
+			<column name="ID" dataType="char" length="36" />
+			<column name="CREATE_USER_ID" dataType="char" length="36" nullable="false" />
+			<column name="CREATE_DATE" dataType="datetime" nullable="false" />
+			<column name="PROJECT_CODE" dataType="string" length="50" nullable="false" />
+			<column name="TENANT_ID" dataType="char" length="36" nullable="false" />
+
+			<column name="AUPE_ID" dataType="string" length="36"  nullable="true"/>
+			<column name="AUDA_R_NOT_ALLOW" dataType="number" length="2"  nullable="true"/>
+			<column name="AUDA_RIGHT_TYPE" dataType="string" length="10"  nullable="true"/>
+			<column name="AUDA_W_ALLOW" dataType="number" length="2"  nullable="true"/>
+			<column name="AUDA_AUTH_NOT_ALLOW" dataType="number" length="2"  nullable="true"/>
+			<column name="AUDA_W_NOT_ALLOW" dataType="number" length="2"  nullable="true"/>
+			<column name="AUDA_DESC" dataType="string" length="100"  nullable="true"/>
+			<column name="AUDA_R_ALLOW" dataType="number" length="2"  nullable="true"/>
+			<column name="AUDA_LEFT_ID" dataType="string" length="36"  nullable="true"/>
+			<column name="AUDA_ENABLE" dataType="number" length="2"  nullable="true"/>
+			<column name="AUDA_RIGHT_ID" dataType="string" length="36"  nullable="true"/>
+			<column name="AUDA_LEFT_TYPE" dataType="string" length="10"  nullable="true"/>
+			<column name="AUDA_WEIGHT" dataType="number" length="2"  nullable="true"/>
+			<column name="AUDA_TYPE" dataType="string" length="10"  nullable="true"/>
+			<column name="AUDA_AUTH_ALLOW" dataType="number" length="2"  nullable="true"/>
+		</columns>
+		<constraints>
+			<constraint type="PRIMARY_KEY"> 
+				<column name="ID" /> 
+			</constraint> 
+		</constraints>
+	</table>
+</mapping-configuration>

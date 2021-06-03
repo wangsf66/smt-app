@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+<property  supportCover="false" supportDelete="false" extend="{'type':2,'params':['PAGE_CODE','LAYOUT_VERSION','OBJ_REF','MENU_REF_PAGE_ID']}"/>
+<sql namespace="GET_AUTH_LAYOUT_STRUCTURE">
+<content name="966d6266-8779-4762-9a73-7bcf6d76fa7b" type="select">
+SELECT 
+  S.REF_ID as ID,
+  S.ID as DATA_ID,
+  S.REF_CONTAINER,
+  S.PAGE_ID,REF_TITLE,
+  S.REF_PARENT_ID,
+  S.NODE_TYPE,
+  S.NODE_ATTR,
+  S.COMPONENT_ID,
+  S.REF_DATA,
+  S.COMPONENT_ATTR_TYPE,
+  ISNULL(T.AUPAST_R_ALLOW,0) + ISNULL(T.AUPAST_R_NOT_ALLOW,0) AS  R_ALLOW,
+  ISNULL(T.AUPAST_AUTH_ALLOW,0) + ISNULL(T.AUPAST_AUTH_NOT_ALLOW,0) AS  AUTH_ALLOW,
+  ISNULL(T.AUPAST_W_ALLOW,0) + ISNULL(T.AUPAST_W_NOT_ALLOW,0) AS  W_ALLOW
+FROM SMT_SETTING_LAYOUT_STRUCTURE S
+LEFT JOIN 
+(
+SELECT 
+PS.ID,
+PS.AUPAST_REF_OBJ_ID,
+PS.AUPAST_R_ALLOW,
+PS.AUPAST_R_NOT_ALLOW,
+PS.AUPAST_AUTH_ALLOW,
+PS.AUPAST_AUTH_NOT_ALLOW,
+PS.AUPAST_W_ALLOW,
+PS.AUPAST_W_NOT_ALLOW
+FROM 
+SmartOne2_VC.dbo.SMT_AUTH_PAGE_STRUCT PS  WITH (NOLOCK)
+LEFT JOIN  SmartOne2_VC.dbo.SMT_AUTH_PERMISSION  P  WITH (NOLOCK)
+on P.ID = PS.AUPE_ID  AND P.AUPE_AUTH_TYPE='meuu'
+WHERE P.AUPE_REF_OBJ_ID = $OBJ_REF$ and ps.AUPAST_PAGE_ID= $MENU_REF_PAGE_ID$
+) T ON S.REF_ID = T.AUPAST_REF_OBJ_ID
+WHERE S.PAGE_ID IN (SELECT ID FROM SmartOne2_VC.dbo.SMT_SETTING_LAYOUT WHERE PAGE_CODE = $PAGE_CODE$ AND [VERSION] = $LAYOUT_VERSION$) 
+AND (S.COMPONENT_ATTR_TYPE &lt;&gt; 'columns' OR S.COMPONENT_ATTR_TYPE IS NULL)
+
+</content>
+</sql>
+<validators>
+<validator name="PAGE_CODE"  enableNotNull="true" enableDataType="true"  /> 
+<validator name="LAYOUT_VERSION"  enableNotNull="true" enableDataType="true"  /> 
+<validator name="OBJ_REF"  enableNotNull="true" enableDataType="true"  /> 
+<validator name="MENU_REF_PAGE_ID"  enableNotNull="true" enableDataType="true"  /> 
+</validators>
+</mapping-configuration>

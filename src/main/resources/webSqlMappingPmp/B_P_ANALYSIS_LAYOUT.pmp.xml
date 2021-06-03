@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+	<property  supportCover="false" supportDelete="false" extend="{'type':1}" />
+	<procedure name="B_P_ANALYSIS_LAYOUT" >
+		<![CDATA[ 
+			CREATE PROCEDURE B_P_ANALYSIS_LAYOUT
+			(
+				@LAYOUTID varchar(50),
+				@LAYOUTJSON varchar(MAX),
+				@PROJECT_CODE VARCHAR(50),
+				@TENANT_ID CHAR(36),
+				@CREATE_USER_ID CHAR(36)
+			)
+			AS
+			BEGIN
+
+			IF(@LAYOUTJSON IS NULL)
+			BEGIN
+			  SET @LAYOUTJSON ='[]'
+			END
+
+
+			 DELETE FROM SMT_SETTING_LAYOUT_STRUCTURE WHERE 
+			 [PAGE_ID] = @LAYOUTID;
+
+
+			 INSERT INTO [dbo].[SMT_SETTING_LAYOUT_STRUCTURE]
+					   ([REF_CONTAINER]
+					   ,[PAGE_ID]
+					   ,[REF_TITLE]
+					   ,[REF_PARENT_ID]
+					   ,[NODE_TYPE]
+					   ,[NODE_ATTR]
+					   ,[COMPONENT_ID]
+					   ,[COMPONENT_ATTR_TYPE]
+					   ,[REF_DATA]
+					   ,[REF_ID]
+					   ,[ID]
+					   ,[CREATE_USER_ID]
+					   ,[CREATE_DATE]
+					   ,[PROJECT_CODE]
+					   ,[TENANT_ID])
+					  select
+					   container,
+					   @LAYOUTID,
+					   isnull(TITLE,type),
+					   case parentId when 'null' then null else parentId end,
+					   null,
+					   null,
+					   componentId as COMPONENT_ID,
+					   componentDataType as COMPONENT_ATTR_TYPE,
+					   null,
+					   id,
+						newid(),
+					   @CREATE_USER_ID,
+					   GETDATE(),
+					   @PROJECT_CODE,
+					  @TENANT_ID
+			 FROM SmartOne2_VC.[dbo].[A_F_LayoutStructureJsonToTable](@LAYOUTID,@LAYOUTJSON) a
+			 WHERE ID IS NOT NULL
+			 END
+		]]>
+	</procedure>
+</mapping-configuration>

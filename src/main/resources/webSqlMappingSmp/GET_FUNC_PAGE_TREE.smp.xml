@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+<property  supportCover="false" supportDelete="false" extend="{'type':2,'params':[]}"/>
+<sql namespace="GET_FUNC_PAGE_TREE">
+<content name="ed6808b7-1a2b-4ea8-8d6c-8674cefb63c2" type="select">
+SELECT 
+    ID,
+    PID,
+    NAME + '[功能]' AS NAME,
+    CODE,
+    1 AS NODE_TYPE
+FROM SMT_SETTING_FUNC WITH (NOLOCK)
+UNION 
+SELECT 
+    A.ID,
+    A.PID,
+    A.NAME + '[主页]' AS NAME,
+    A.CODE,
+    2 AS NODE_TYPE
+FROM SMT_SETTING_PAGE AS A WITH(NOLOCK)
+INNER JOIN SMT_SETTING_FUNC AS B WITH(NOLOCK)
+ON A.PID = B.ID
+</content>
+</sql>
+</mapping-configuration>

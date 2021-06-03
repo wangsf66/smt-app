@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+<property  supportCover="false" supportDelete="false" extend="{'type':2,'params':[]}"/>
+<sql namespace="GET_DM_COLUMNS_LIST">
+<content name="bfb5836e-d86f-4efa-bbda-ca57ea3ad38e" type="select">
+SELECT
+    ID,
+    RESOURCE_ID,
+    PARAM_NAME,
+    DESC_NAME,
+    DATATYPE,
+    LENGTH,
+    DEFAULT_VALUE,
+    [PRECISION],
+    IS_NULLABLE,
+    CASE IS_NULLABLE WHEN 0 THEN '不为空' WHEN 1 THEN '可为空' END AS IS_NULLABLE_TEXT,
+    IS_UNIQUE,
+    CASE IS_UNIQUE WHEN 0 THEN '不唯一' WHEN 1 THEN '唯一' END AS IS_UNIQUE_TEXT,
+    IS_VALIDATE,
+    CASE IS_VALIDATE WHEN 0 THEN '不可用' WHEN 1 THEN '可用' END AS IS_VALIDATE_TEXT,
+    ORDER_CODE
+FROM DM_RESOURCE_PARAMS
+</content>
+</sql>
+</mapping-configuration>

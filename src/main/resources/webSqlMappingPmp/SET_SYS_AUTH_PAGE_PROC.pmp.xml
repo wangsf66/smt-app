@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+	<property  supportCover="false" supportDelete="false" extend="{'type':1}" />
+		<procedure name="SET_SYS_AUTH_PAGE_PROC" >
+		<![CDATA[ 
+			CREATE PROC SET_SYS_AUTH_PAGE_PROC 
+			@SYS_AUTH_PAGE_ID VARCHAR(36), 
+			@MENU_ID VARCHAR(36),   
+			@AUPE_AUTH_TYPE VARCHAR(10),
+			@AUTH_TYPE INT,
+			@AUPE_ID VARCHAR(36),
+			@LAYOUT_ID VARCHAR(36),
+			@AUPE_PERMISSION_TYPE VARCHAR(10),
+			@AUPE_PERMISSION_CONTENT VARCHAR(50),
+			@MESSAGE VARCHAR(200) OUTPUT,
+			@MESSAGE_TYPE VARCHAR(10) OUTPUT,
+
+			@CREATE_USER_ID CHAR(36),
+			@CREATE_DATE DATETIME,
+			@TENANT_ID CHAR(36),
+			@PROJECT_CODE VARCHAR(50)
+			AS
+			BEGIN
+				DECLARE @R_ALLOW INT
+				DECLARE @R_NOT_ALLOW INT
+				DECLARE @AUPE_WEIGHT INT
+				DECLARE @AUPE_TYPE VARCHAR(36)
+				DECLARE @newid VARCHAR(36)
+
+				IF @AUTH_TYPE = 1
+				BEGIN
+					SET @R_ALLOW = 1
+					SET @R_NOT_ALLOW = 0
+				END
+				ELSE IF @AUTH_TYPE = 2
+				BEGIN
+					SET @R_ALLOW = 0
+					SET @R_NOT_ALLOW = 2
+				END
+				ELSE IF @AUTH_TYPE = 0
+				BEGIN
+					SET @R_ALLOW = 0
+					SET @R_NOT_ALLOW = 0
+				END
+
+
+				SET @AUPE_ID =(SELECT MAX(ID) FROM  SmartOne2_VC.dbo.SMT_AUTH_PERMISSION P WHERE  P.AUPE_AUTH_TYPE = 'menu' AND P.AUPE_REF_OBJ_ID=@AUPE_PERMISSION_CONTENT)
+				SET @AUPE_TYPE =(SELECT AUPE_PERMISSION_TYPE FROM  SmartOne2_VC.dbo.SMT_AUTH_PERMISSION P WHERE  P.AUPE_AUTH_TYPE = 'menu' AND P.AUPE_REF_OBJ_ID=@AUPE_PERMISSION_CONTENT)
+				IF(@AUPE_TYPE='user')
+				BEGIN
+				 SET @AUPE_WEIGHT =3
+				END
+				ELSE 
+				BEGIN
+				  SET @AUPE_WEIGHT =1
+				END
+
+				   
+				IF @AUPE_ID IS NULL
+				BEGIN
+					SET @MESSAGE = '当前菜单还未进行授权,无法对页面进行授权设置'
+					SET @MESSAGE_TYPE = 'warning'
+				END
+				ELSE
+				BEGIN
+				   SET @MESSAGE = '查到AUPE_ID'
+				  SET @MESSAGE_TYPE = 'success'
+				END
+
+				
+
+				IF(@MESSAGE_TYPE!='warning')
+				BEGIN
+
+				IF NOT EXISTS (
+					SELECT TOP 1 1 
+					FROM SmartOne2_VC.dbo.SMT_AUTH_PAGE WITH (NOLOCK) 
+					WHERE AUPE_ID = @AUPE_ID 
+					AND AUPA_REF_OBJ_ID = @LAYOUT_ID
+					AND MENU_ID = @MENU_ID
+				)
+				BEGIN
+				  
+					set @SYS_AUTH_PAGE_ID =  newid();
+					INSERT INTO SmartOne2_VC.dbo.SMT_AUTH_PAGE
+					(
+						ID,
+						AUPE_ID,
+						MENU_ID,
+						AUPA_AUTH_TYPE,
+						AUPA_ENABLE_PERMISSION,
+						AUPA_R_ALLOW,
+						AUPA_R_NOT_ALLOW,
+						AUPA_REF_OBJ_ID,
+						AUPA_STATE,
+						AUPA_WEIGHT,
+						CREATE_USER_ID,
+						CREATE_DATE,
+						TENANT_ID,
+						PROJECT_CODE
+					)VALUES
+					(
+						@SYS_AUTH_PAGE_ID,
+						@AUPE_ID,
+						@MENU_ID,
+						@AUPE_AUTH_TYPE,
+						1,
+						@R_ALLOW,
+						@R_NOT_ALLOW,
+						@LAYOUT_ID,
+						1,
+						@AUPE_WEIGHT,
+						@CREATE_USER_ID,
+						@CREATE_DATE,
+						@TENANT_ID,
+						@PROJECT_CODE
+					);
+
+						IF @AUTH_TYPE = 1
+						BEGIN
+							UPDATE SmartOne2_VC.dbo.SMT_AUTH_PAGE 
+							SET AUPA_R_ALLOW = 0, AUPA_R_NOT_ALLOW = 0,AUPA_WEIGHT=@AUPE_WEIGHT
+							WHERE MENU_ID = @MENU_ID AND
+								AUPE_ID = @AUPE_ID AND
+								ID <> @SYS_AUTH_PAGE_ID AND
+								AUPA_R_ALLOW  = 1
+						END
+					SET @MESSAGE = '设置成功'
+					SET @MESSAGE_TYPE = 'success'
+				END
+				ELSE
+				BEGIN
+
+					IF (@SYS_AUTH_PAGE_ID IS NULL)
+					BEGIN
+					SET  @SYS_AUTH_PAGE_ID=(  SELECT max (ID) FROM  SmartOne2_VC.dbo.SMT_AUTH_PAGE P WHERE 
+						P.AUPE_ID = @AUPE_ID AND AUPA_REF_OBJ_ID = @LAYOUT_ID
+						AND MENU_ID = @MENU_ID )
+					END
+				 
+					IF (@SYS_AUTH_PAGE_ID IS NOT NULL)
+					BEGIN
+						UPDATE SmartOne2_VC.dbo.SMT_AUTH_PAGE 
+						SET AUPA_R_ALLOW = @R_ALLOW, AUPA_R_NOT_ALLOW = @R_NOT_ALLOW
+						WHERE ID = @SYS_AUTH_PAGE_ID 
+						
+						IF @AUTH_TYPE = 1
+						BEGIN
+							UPDATE SmartOne2_VC.dbo.SMT_AUTH_PAGE 
+							SET AUPA_R_ALLOW = 0, AUPA_R_NOT_ALLOW = 0,AUPA_WEIGHT=@AUPE_WEIGHT
+							WHERE MENU_ID = @MENU_ID AND
+								AUPE_ID = @AUPE_ID AND
+								ID <> @SYS_AUTH_PAGE_ID AND
+								AUPA_R_ALLOW  = 1
+						END
+						
+						SET @MESSAGE = '授权状态更改成功'
+						SET @MESSAGE_TYPE = 'success'
+					END
+					ELSE
+					BEGIN
+						SET @MESSAGE = '授权失败'
+						SET @MESSAGE_TYPE = 'warning'
+					END
+				END
+				END				
+			END
+		]]>
+	</procedure>
+</mapping-configuration>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+<property supportCover="true" supportDelete="true" extendExpr="{'type':1,'results':[],'params':['ID','MESSAGE_TYPE','MESSAGE','LEVEL']}" /><sql namespace="CALL_DELETE_SMT_MENU_PROC_BY_ID"><content name="028de10e-23a3-4669-9048-08c7e8159307" type="procedure">
+{call DELETE_SMT_MENU_PROC_BY_ID($ID|defaultValue=ID|dbType=CHAR|length=36|mode=in|nullable=true$,$LEVEL|defaultValue=Varcharmax|dbType=INT|mode=in|nullable=true$,$MESSAGE|defaultValue=MESSAGE|dbType=NVARCHAR|length=50|mode=out|nullable=false$,$MESSAGE_TYPE|defaultValue=MESSAGE_TYPE|dbType=NVARCHAR|length=10|mode=out|nullable=false$)}</content>
+</sql>
+</mapping-configuration>

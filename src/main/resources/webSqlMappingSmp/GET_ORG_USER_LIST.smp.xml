@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+<property  supportCover="false" supportDelete="false" extend="{'type':2,'params':['ORG_CODE']}"/>
+<sql namespace="GET_ORG_USER_LIST">
+<content name="af315248-9aa1-46dc-a21d-7fa764b5b09e" type="select">
+WITH DEPT_USER AS
+(
+ SELECT * FROM (
+  SELECT 
+   B.ID,
+   B.REAL_NAME,
+   B.NAME AS NIKE_NAME,
+   B.SEX,
+   B.PHONE_NUM,
+   B.EMAIL,
+   C.CODE,
+   C.PARENT_ID,
+   C.ID AS ORG_ID
+  FROM SMT_BASE.dbo.BASE_DATA_REL AS A WITH (NOLOCK)
+  INNER JOIN SMT_BASE.dbo.BASE_USER AS B WITH(NOLOCK)
+  ON A.LEFT_VALUE = B.ID AND A.LEFT_TYPE='USER_ID'
+  INNER JOIN SMT_BASE.dbo.BASE_ORG AS C WITH(NOLOCK)
+  ON A.RIGHT_VALUE = C.CODE AND A.RIGHT_TYPE='ORG_CODE'
+  WHERE C.CODE= $ORG_CODE$
+ ) AS T
+ UNION ALL
+ SELECT P.* FROM (
+  SELECT 
+   B.ID,
+   B.REAL_NAME,
+   B.NAME AS NIKE_NAME,
+   B.SEX,
+   B.PHONE_NUM,
+   B.EMAIL,
+   C.CODE,
+   C.PARENT_ID,
+   C.ID AS ORG_ID
+  FROM SMT_BASE.dbo.BASE_DATA_REL AS A WITH (NOLOCK)
+  INNER JOIN SMT_BASE.dbo.BASE_USER AS B WITH(NOLOCK)
+  ON A.LEFT_VALUE = B.ID AND A.LEFT_TYPE='USER_ID'
+  INNER JOIN SMT_BASE.dbo.BASE_ORG AS C WITH(NOLOCK)
+  ON A.RIGHT_VALUE = C.CODE AND A.RIGHT_TYPE='ORG_CODE'
+ ) AS P,DEPT_USER WHERE P.PARENT_ID = DEPT_USER.ORG_ID
+)SELECT ID, REAL_NAME, NIKE_NAME, SEX, SEX_TEXT = CASE SEX WHEN 1 THEN '男' WHEN 2 THEN '女' END, PHONE_NUM, EMAIL, CODE, PARENT_ID, ORG_ID FROM DEPT_USER
+</content>
+</sql>
+<validators>
+<validator name="ORG_CODE"  enableNotNull="true" enableDataType="true"  /> 
+</validators>
+</mapping-configuration>

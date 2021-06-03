@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+	<property  supportCover="false" supportDelete="false" extend="{'type':1}" />
+	<procedure name="ADD_DATA_AUTH" >
+		<![CDATA[ 
+			 CREATE PROC ADD_DATA_AUTH
+				  @AFFERENT_ID VARCHAR(36),
+				  @RELATION_IDS VARCHAR(200),
+				  @CREATE_USER_ID CHAR(36),
+				  @CREATE_DATE DATETIME,
+				  @PROJECT_CODE VARCHAR(50),
+				  @TENANT_ID CHAR(36),
+				  @AUTH_IDEN VARCHAR(20),
+				  @R_ALLOW INT OUTPUT,
+				  @W_ALLOW INT OUTPUT,
+				  @AUTH_ALLOW INT OUTPUT,
+				  @MESSAGE VARCHAR(50) OUTPUT,
+				  @MESSAGE_TYPE VARCHAR(20) OUTPUT
+				AS
+				BEGIN
+				DECLARE @AUTH_ID VARCHAR(36)
+				SET @AUTH_ID = NEWID()
+
+				/*声明权重变量简化SQL内容*/
+				DECLARE @AUDA_R_NOT_ALLOW SMALLINT
+				DECLARE @AUDA_RIGHT_TYPE VARCHAR(10)
+				DECLARE @AUDA_W_ALLOW SMALLINT
+				DECLARE @AUDA_AUTH_NOT_ALLOW SMALLINT
+				DECLARE @AUDA_W_NOT_ALLOW SMALLINT
+				DECLARE @AUDA_R_ALLOW SMALLINT
+				DECLARE @AUDA_ENABLE SMALLINT
+				DECLARE @AUDA_AUTH_ALLOW SMALLINT
+
+				/*初始化权重变量赋值*/
+				SET @AUDA_R_NOT_ALLOW = 0
+				SET @AUDA_RIGHT_TYPE = 'ORG'
+				SET @AUDA_W_ALLOW = 0
+				SET @AUDA_AUTH_NOT_ALLOW = 0
+				SET @AUDA_W_NOT_ALLOW = 0
+				SET @AUDA_R_ALLOW = 0
+				SET @AUDA_ENABLE = 1
+				SET @AUDA_AUTH_ALLOW = 0
+
+				/*根据传入ID判断类型，角色和人员，角色使用编码，人员使用ID*/
+				DECLARE @AFFERENT_TYPE VARCHAR(10)
+				IF EXISTS (SELECT TOP 1 1 FROM SMT_BASE.dbo.BASE_USER WHERE ID= @AFFERENT_ID)
+				BEGIN
+					SET @AFFERENT_TYPE = 'user'
+				END
+
+				ELSE IF EXISTS (SELECT TOP 1 1 FROM SMT_BASE.dbo.BASE_ROLE WHERE CODE= @AFFERENT_ID)
+				BEGIN
+					SET @AFFERENT_TYPE = 'role'
+				END
+
+				/*组装描述字段*/
+				DECLARE @AUTH_DESC VARCHAR(100)
+				SET @AUTH_DESC = @AFFERENT_TYPE + ':' + @AFFERENT_ID + '和组织机构的关联'
+
+				/*处理传入ID进表变量*/
+				DECLARE @RELATION_IDS_TABLE TABLE
+				(
+				  ID varchar(36)
+				)
+				INSERT INTO @RELATION_IDS_TABLE( ID )
+				SELECT DISTINCT  value FROM dbo.F_SPLIT(@RELATION_IDS,',')
+
+				IF EXISTS (SELECT TOP 1 1 FROM SmartOne2_VC.dbo.SMT_AUTH_PERMISSION WHERE AUPE_REF_OBJ_ID = @AFFERENT_ID AND AUPE_PERMISSION_TYPE = @AFFERENT_TYPE AND AUPE_AUTH_TYPE = 'data')
+				BEGIN
+					SET @AUTH_ID = (SELECT ID FROM SmartOne2_VC.dbo.SMT_AUTH_PERMISSION WHERE AUPE_REF_OBJ_ID = @AFFERENT_ID AND AUPE_PERMISSION_TYPE = @AFFERENT_TYPE AND AUPE_AUTH_TYPE = 'data')
+				END
+				/*判断授权表中有没有对应数据，没有要新增*/
+				IF NOT EXISTS (SELECT TOP 1 1 FROM SmartOne2_VC.dbo.SMT_AUTH_PERMISSION WHERE AUPE_REF_OBJ_ID = @AFFERENT_ID AND AUPE_PERMISSION_TYPE = @AFFERENT_TYPE AND AUPE_AUTH_TYPE = 'data')
+				BEGIN
+					INSERT INTO SmartOne2_VC.dbo.SMT_AUTH_PERMISSION
+						( AUPE_STRU_READONLY ,
+						  AUPE_REF_OBJ_ID ,
+						  AUPE_R_ALLOW ,
+						  AUPE_R_NOT_ALLOW ,
+						  AUPE_W_ALLOW ,
+						  AUPE_PERMISSION_TYPE ,
+						  AUPE_AUTH_ALLOW ,
+						  AUPE_W_NOT_ALLOW ,
+						  AUPE_AUTH_TYPE ,
+						  AUPE_AUTH_NOT_ALLOW ,
+						  AUPE_STATE ,
+						  ID ,
+						  CREATE_USER_ID ,
+						  CREATE_DATE ,
+						  PROJECT_CODE ,
+						  TENANT_ID
+						)
+				VALUES  ( 1 ,
+						  @AFFERENT_ID , 
+						  1 ,
+						  0 ,
+						  1 ,
+						  @AFFERENT_TYPE ,
+						  1 ,
+						  0 ,
+						  'data' ,
+						  0 ,
+						  1 ,
+						  @AUTH_ID , 
+						  @CREATE_USER_ID , 
+						  @CREATE_DATE , 
+						  @PROJECT_CODE , 
+						  @TENANT_ID  
+						)
+				END
+
+				IF (@AUTH_IDEN = 'R1') 
+				BEGIN
+				/*将表变量的ID进行分类：1.之前和现在都有的不处理；2.之前有现在没有的，将授权值更新为0；3.之前没有现在有的，插入新纪录，允许权限字段更新为1*/
+				/*3.插入新纪录，允许权限字段更新为1，先在数据权限表里加上，之后在授权表中加入一条数据*/
+					SET @AUDA_R_ALLOW = 1
+					SET @MESSAGE = '设置数据可见成功'
+					SET @MESSAGE_TYPE = 'success'
+					SET @R_ALLOW = 1
+				END
+
+				IF (@AUTH_IDEN = 'R2')
+				BEGIN
+				/*将表变量的ID进行分类：1.之前和现在都有的不处理；2.之前有现在没有的，将不允许授权值更新为0；3.之前没有现在有的，插入新纪录，不允许权限字段更新为2*/
+				/*3.插入新纪录，允许权限字段更新为1，先在数据权限表里加上，之后在授权表中加入一条数据*/
+					SET @AUDA_R_NOT_ALLOW = 2 
+					SET @MESSAGE = '设置数据不可见成功'
+					SET @MESSAGE_TYPE = 'success'
+					SET @R_ALLOW = 2
+				END
+
+				IF (@AUTH_IDEN = 'R0')
+				BEGIN
+					SET @MESSAGE = '取消设置数据可见成功'
+					SET @MESSAGE_TYPE = 'success'
+					SET @R_ALLOW = 0
+				END
+
+				IF (@AUTH_IDEN = 'W1') 
+				BEGIN
+				/*将表变量的ID进行分类：1.之前和现在都有的不处理；2.之前有现在没有的，将授权值更新为0；3.之前没有现在有的，插入新纪录，允许权限字段更新为1*/
+				/*3.插入新纪录，允许权限字段更新为1，先在数据权限表里加上，之后在授权表中加入一条数据*/
+					SET @AUDA_W_ALLOW = 1
+					SET @MESSAGE = '设置数据可编辑成功'
+					SET @MESSAGE_TYPE = 'success'
+					SET @W_ALLOW = 1
+				END
+
+				IF (@AUTH_IDEN = 'W2')
+				BEGIN
+				/*将表变量的ID进行分类：1.之前和现在都有的不处理；2.之前有现在没有的，将不允许授权值更新为0；3.之前没有现在有的，插入新纪录，不允许权限字段更新为2*/
+				/*3.插入新纪录，允许权限字段更新为1，先在数据权限表里加上，之后在授权表中加入一条数据*/
+					SET @AUDA_W_NOT_ALLOW = 2
+					SET @MESSAGE = '设置数据不可编辑成功'
+					SET @MESSAGE_TYPE = 'success'
+					SET @W_ALLOW = 2
+				END
+
+				IF (@AUTH_IDEN = 'W0')
+				BEGIN
+					SET @MESSAGE = '取消设置数据编辑成功'
+					SET @MESSAGE_TYPE = 'success'
+					SET @W_ALLOW = 0
+				END
+
+					INSERT INTO SmartOne2_VC.dbo.SMT_AUTH_DATA
+							( 
+							  AUDA_R_NOT_ALLOW ,
+							  AUDA_RIGHT_TYPE ,
+							  AUDA_W_ALLOW ,
+							  AUDA_AUTH_NOT_ALLOW ,
+							  AUDA_W_NOT_ALLOW ,
+							  AUDA_DESC ,
+							  AUDA_R_ALLOW ,
+							  AUDA_LEFT_ID ,
+							  AUDA_ENABLE ,
+							  AUDA_RIGHT_ID ,
+							  AUDA_LEFT_TYPE ,
+							  AUDA_WEIGHT ,
+							  AUDA_TYPE ,
+							  AUDA_AUTH_ALLOW ,
+							  ID ,
+							  CREATE_USER_ID ,
+							  CREATE_DATE ,
+							  PROJECT_CODE ,
+							  TENANT_ID ,
+							  AUPE_ID
+							)
+					SELECT 
+					  @AUDA_R_NOT_ALLOW,
+					  @AUDA_RIGHT_TYPE,
+					  @AUDA_W_ALLOW,
+					  @AUDA_AUTH_NOT_ALLOW,
+					  @AUDA_W_NOT_ALLOW,
+					  @AUTH_DESC,
+					  @AUDA_R_ALLOW,
+					  @AFFERENT_ID,
+					  @AUDA_ENABLE,
+					  ID,
+					  @AFFERENT_TYPE,
+					  CASE @AFFERENT_TYPE WHEN 'role' THEN 1
+					  WHEN 'user' THEN 3 END,
+					  'data',
+					  @AUDA_AUTH_ALLOW,
+					  NEWID(),
+					  @CREATE_USER_ID,
+					  @CREATE_DATE,
+					  @PROJECT_CODE , 
+					  @TENANT_ID,
+					  @AUTH_ID
+					FROM @RELATION_IDS_TABLE
+					WHERE ID NOT IN(
+					SELECT 
+					  AUDA_RIGHT_ID 
+					FROM SmartOne2_VC.dbo.SMT_AUTH_DATA
+					WHERE AUDA_LEFT_ID = @AFFERENT_ID)
+					/*2.权值更新为0*/
+					UPDATE SmartOne2_VC.dbo.SMT_AUTH_DATA SET AUDA_R_ALLOW = 0,AUDA_R_NOT_ALLOW = 0, AUDA_W_ALLOW = 0, AUDA_W_NOT_ALLOW = 0 WHERE AUDA_LEFT_ID = @AFFERENT_ID 
+					AND AUDA_LEFT_TYPE = @AFFERENT_TYPE 
+				   /* AND AUDA_RIGHT_ID IN (SELECT AUDA_RIGHT_ID FROM SmartOne2_VC.dbo.SMT_AUTH_DATA)*/
+					AND AUDA_RIGHT_ID  IN (SELECT ID FROM @RELATION_IDS_TABLE)
+					
+					/*对表中已经有的数据进行更新*/
+					UPDATE SmartOne2_VC.dbo.SMT_AUTH_DATA SET 
+					AUDA_R_ALLOW = @AUDA_R_ALLOW,
+					AUDA_R_NOT_ALLOW = @AUDA_R_NOT_ALLOW,
+					AUDA_W_ALLOW = @AUDA_W_ALLOW, 
+					AUDA_W_NOT_ALLOW = @AUDA_W_NOT_ALLOW
+					WHERE AUDA_LEFT_ID = @AFFERENT_ID 
+					AND AUDA_LEFT_TYPE = @AFFERENT_TYPE 
+					AND AUDA_RIGHT_ID IN (SELECT AUDA_RIGHT_ID FROM SmartOne2_VC.dbo.SMT_AUTH_DATA)
+					AND AUDA_RIGHT_ID IN (SELECT ID FROM @RELATION_IDS_TABLE)
+				END
+		]]>
+	</procedure>
+</mapping-configuration>

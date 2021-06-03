@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+	<table name="SMT_AUTH_MENU" createMode="create" strict="true">
+		<columns>
+			<column name="ID" dataType="char" length="36" />
+			<column name="CREATE_USER_ID" dataType="char" length="36" nullable="false" />
+			<column name="CREATE_DATE" dataType="datetime" nullable="false" />
+			<column name="PROJECT_CODE" dataType="string" length="50" nullable="false" />
+			<column name="TENANT_ID" dataType="char" length="36" nullable="false" />
+
+
+			<column name="AUFU_REF_OBJ_ID" dataType="string" length="36"  nullable="true"/>
+			<column name="AUFU_AUTH_ALLOW" dataType="number" length="1"  nullable="true"/>
+			<column name="AUFU_WEIGHT" dataType="number" length="4"  nullable="true"/>
+			<column name="AUFU_STATE" dataType="number" length="1"  nullable="true"/>
+			<column name="AUFU_W_ALLOW" dataType="number" length="1"  nullable="true"/>
+			<column name="AUFU_W_NOT_ALLOW" dataType="number" length="1"  nullable="true"/>
+			<column name="AUPE_ID" dataType="string" length="36"  nullable="true"/>
+			<column name="AUFU_R_NOT_ALLOW" dataType="number" length="1"  nullable="true"/>
+			<column name="AUFU_R_ALLOW" dataType="number" length="1"  nullable="true"/>
+			<column name="AUFU_REMARK" dataType="string" length="200"  nullable="true"/>
+			<column name="AUFU_ENABLE_PERMISSION" dataType="number" length="1"  nullable="true"/>
+			<column name="AUFU_AUTH_TYPE" dataType="string" length="30"  nullable="true"/>
+			<column name="AUFU_AUTH_NOT_ALLOW" dataType="number" length="1"  nullable="true"/>
+			<column name="AUFU_ORDER" dataType="number" length="4"  nullable="true"/>
+		</columns>
+		<constraints>
+			<constraint type="PRIMARY_KEY"> 
+				<column name="ID" /> 
+			</constraint> 
+		</constraints>
+	</table>
+</mapping-configuration>

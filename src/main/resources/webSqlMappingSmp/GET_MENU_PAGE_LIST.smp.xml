@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+<property  supportCover="false" supportDelete="false" extend="{'type':2,'params':[]}"/>
+<sql namespace="GET_MENU_PAGE_LIST">
+<content name="50516f8a-b6c5-42de-ace1-c32842ebe0f0" type="select">
+SELECT
+	A.ID, 
+	A.MENU_CODE,
+	B.NAME + ' [主页]' AS NAME,
+	B.SORT,
+	B.[STATE],
+	A.PAGE_CODE,
+	CASE B.[STATE] WHEN 1 THEN '启用' WHEN 2 THEN '禁用' END AS STATE_TEXT
+FROM SMT_MENU_PAGE_REL AS A WITH (NOLOCK)
+INNER JOIN SMT_SETTING_PAGE AS B WITH (NOLOCK)
+ON A.PAGE_CODE = B.CODE
+</content>
+</sql>
+</mapping-configuration>

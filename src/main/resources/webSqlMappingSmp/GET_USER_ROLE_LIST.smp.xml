@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+<property  supportCover="false" supportDelete="false" extend="{'type':2,'params':['USER_ID']}"/>
+<sql namespace="GET_USER_ROLE_LIST">
+<content name="fd1bc56d-918c-4526-ba31-75c991f4b29d" type="select">
+SELECT
+ R.ID,
+ R.NAME,
+ R.CODE,
+ CASE ISNULL(D.RIGHT_VALUE,'NULL') WHEN 'NULL' THEN '未拥有'
+ ELSE '已拥有' END AS USER_IDENTI,
+ CASE ISNULL(D.RIGHT_VALUE,'NULL') WHEN 'NULL' THEN 2
+ ELSE 1 END AS SORT,
+ R.[DESCRIPTION]
+FROM SMT_BASE.dbo.BASE_ROLE R
+LEFT JOIN (
+SELECT * FROM SMT_BASE.dbo.BASE_DATA_REL
+WHERE LEFT_VALUE = $USER_ID$ AND LEFT_TYPE = 'USER_ID' AND RIGHT_TYPE = 'ROLE_CODE'
+) D
+ON R.CODE = D.RIGHT_VALUE
+</content>
+</sql>
+<validators>
+<validator name="USER_ID"  enableNotNull="true" enableDataType="true"  /> 
+</validators>
+</mapping-configuration>

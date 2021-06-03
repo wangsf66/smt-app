@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+<property  supportCover="fasle" supportDelete="fasle" extend="{'type':2,'params':[]}"/>
+<sql namespace="GET_PAGE_TREE">
+<content name="47f68842-9e45-4414-bf12-930b6f82b3ca" type="select">
+SELECT 
+  B.ID,
+  B.PARENT_ID,
+  B.PAGE_CODE AS LAYOUT_ID,
+  A.NAME,
+  A.ID AS REF_LAYOUT_ID,
+  B.MENU_CODE AS MENU_CODE
+  FROM SmartOne2_VC.dbo.SMT_MENU_PAGE_REL B WITH (NOLOCK)
+INNER JOIN dbo.SMT_SETTING_LAYOUT A WITH (NOLOCK)
+ON A.PAGE_CODE= B.PAGE_CODE
+</content>
+</sql>
+</mapping-configuration>

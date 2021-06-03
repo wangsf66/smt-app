@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+     <property supportCover="true" supportDelete="true" extend="desc_name,resource_name,old_resource_name,create_model,is_build_model,type,content,resource_type,module_id,support_delete,support_cover" />
+	 <table name="DM_RESOURCE" class="com.smt.app.config.resource.general.entity.DmResource" strict="true">
+		<columns>
+			<column name="ID" dataType="char" length="36" />
+		   	<column name="CREATE_USER_ID" dataType="char" length="36" nullable="false" />
+		   	<column name="CREATE_DATE" dataType="datetime" nullable="false" />
+		   	<column name="PROJECT_CODE" dataType="string" length="50" nullable="false" />
+		   	<column name="TENANT_ID" dataType="char" length="36" nullable="false" />
+			
+			<column name="desc_name" property="descName" description="描述名"  dataType="string" length="200"  />
+			<column name="resource_name" property="resourceName" description="资源名" dataType="string" length="100" nullable="false" />
+			<column name="old_resource_name" property="oldResourceName" description="旧表名" dataType="string" length="100" />
+			<column name="create_model" property="createModel" description="创建模式" dataType="number" length="1" />
+			<column name="is_build_model" property="isBuildModel" description="是否建模" dataType="number" length="1" nullable="false" />
+		    <column name="type" property="type" description="SQL类型(1存储结构 0 其他)"  dataType="number" length="1" />
+		    <column name="content" property="content" description="sql内容"  dataType="clob" />
+		    <column name="resource_type" property="resourceType" description="资源类型" dataType="number" length="3" nullable="false"/>
+		    <column name="func_code" property="funcCode" description="所属模块ID" dataType="string" length="36" />
+		    <column name="support_delete" property="supportDelete" description="是否可以被删除" dataType="number" length="1" />	
+		    <column name="support_cover" property="supportCover" description="是否可以被覆盖" dataType="number" length="1" />
+		    <column name="IS_EVER_BUILD_MODEL" property="isEverBuildModel" description="曾经是否建模" dataType="number" length="1" nullable="false" />
+		</columns>
+		<constraints>
+			<constraint type="PRIMARY_KEY">
+				<column name="id" />
+			</constraint>
+		</constraints>
+		<validators>
+		    <validator name="RESOURCE_NAME" enableNotNull="true" enableDataType="true" />
+	    </validators>
+	</table>
+</mapping-configuration>  

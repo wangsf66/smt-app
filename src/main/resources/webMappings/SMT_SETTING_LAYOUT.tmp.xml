@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+	<table name="SMT_SETTING_LAYOUT"  createMode="create" strict="true">
+		<columns>
+			<column name="ID" dataType="char" length="36" />
+			<column name="CREATE_USER_ID" dataType="char" length="36" nullable="false" />
+			<column name="CREATE_DATE" dataType="datetime" nullable="false" />
+			<column name="PROJECT_CODE" dataType="string" length="50" nullable="false" />
+			<column name="TENANT_ID" dataType="char" length="36" nullable="false" />
+
+			<column name="PAGE_JSON" dataType="clob" length="1"    nullable="true"/>
+			<column name="STATE" dataType="number" length="1"    nullable="true"/>
+			<column name="REMARK" dataType="string" length="200"    nullable="true"/>
+			<column name="CMPT_TYPE" dataType="string" length="20"    nullable="true"/>
+			<column name="CODE" dataType="string" length="50"    nullable="true"/>
+			<column name="JSON" dataType="clob" length="1"    nullable="true"/>
+			<column name="PAGE_CODE" dataType="string" length="36"    nullable="true"/>
+			<column name="VERSION" dataType="string" length="50"    nullable="true"/>
+			<column name="NAME" dataType="string" length="50"    nullable="true"/>
+			<column name="SORT" dataType="number" length="1"    nullable="true"/>
+		</columns>
+		<constraints>
+			<constraint type="PRIMARY_KEY"> 
+				<column name="ID" /> 
+			</constraint> 
+		</constraints>
+	</table>
+</mapping-configuration>

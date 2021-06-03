@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+			<mapping-configuration>
+			<property  supportCover="false" supportDelete="false" extend="{'type':2,'params':[]}"/>
+			<sql namespace="GET_MENU_LIST">
+			<content name="f3fd2b34-22a5-4e00-874c-68087e26edf7" type="select">
+				SELECT
+				A.ID,  
+				A.MENU_PARENT_ID,  
+				A.MENU_NAME AS [TEXT],  
+				A.MENU_ICON AS ICON,  
+				A.MENU_SORT,
+				A.MENU_LEVEL as LEVEL, 
+				A.MENU_CODE, 
+				A.MENU_TYPE,/*1.模块2.分组3.功能*/  
+				A.MENU_STATUS,/*1.未启用2.启用*/ 
+				B.PAGE_CODE
+			FROM SMT_MENU AS A WITH (NOLOCK)
+			LEFT JOIN
+			(
+				SELECT MENU_CODE, PAGE_CODE, COUNT(PAGE_CODE) AS CODE_COUNT  FROM SMT_MENU_PAGE_REL WITH (NOLOCK) GROUP BY MENU_CODE, PAGE_CODE HAVING COUNT(PAGE_CODE) > 0 
+			)  B
+			ON A.MENU_CODE = B.MENU_CODE
+			</content>
+			</sql>
+			</mapping-configuration>

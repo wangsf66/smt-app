@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+	<table name="SMT_AUTH_PERMISSION" createMode="create" strict="true">
+		<columns>
+			<column name="ID" dataType="char" length="36" />
+			<column name="CREATE_USER_ID" dataType="char" length="36" nullable="false" />
+			<column name="CREATE_DATE" dataType="datetime" nullable="false" />
+			<column name="PROJECT_CODE" dataType="string" length="50" nullable="false" />
+			<column name="TENANT_ID" dataType="char" length="36" nullable="false" />
+
+			<column name="AUPE_STRU_READONLY" dataType="number" length="1"  nullable="true"/>
+			<column name="AUPE_REF_OBJ_ID" dataType="string" length="36"  nullable="true"/>
+			<column name="AUPE_R_ALLOW" dataType="number" length="1"  nullable="true"/>
+			<column name="AUPE_R_NOT_ALLOW" dataType="number" length="1"  nullable="true"/>
+			<column name="AUPE_W_ALLOW" dataType="number" length="1"  nullable="true"/>
+			<column name="AUPE_PERMISSION_TYPE" dataType="string" length="30"  nullable="true"/>
+			<column name="AUPE_AUTH_ALLOW" dataType="number" length="1"  nullable="true"/>
+			<column name="AUPE_W_NOT_ALLOW" dataType="number" length="1"  nullable="true"/>
+			<column name="AUPE_AUTH_TYPE" dataType="string" length="30"  nullable="true"/>
+			<column name="AUPE_AUTH_NOT_ALLOW" dataType="number" length="1"  nullable="true"/>
+			<column name="AUPE_STATE" dataType="number" length="1"  nullable="true"/>
+		</columns>
+		<constraints>
+			<constraint type="PRIMARY_KEY"> 
+				<column name="ID" /> 
+			</constraint> 
+		</constraints>
+	</table>
+</mapping-configuration>

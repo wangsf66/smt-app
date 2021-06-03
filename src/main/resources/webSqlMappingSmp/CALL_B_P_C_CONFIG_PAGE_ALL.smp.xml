@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+	<property  supportCover="false" supportDelete="false" extend="{'type':1,'results':[],'params':['PAGE_CODE']}" />
+	<sql namespace="CALL_B_P_C_CONFIG_PAGE_ALL">
+		<content name="f588246e-fad0-48ac-af61-c007e90f6fa2" type="procedure">
+			{call B_P_C_CONFIG_PAGE_ALL(
+				$PAGE_CODE|dbType=NVARCHAR|length=50|mode=in|nullable=true$)}
+		</content>
+	</sql>
+</mapping-configuration>

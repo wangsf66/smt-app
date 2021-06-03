@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+	<property  supportCover="false" supportDelete="false" extend="{'type':1}" />
+	<procedure name="B_P_C_CONFIG_PAGE_ALL" >
+		<![CDATA[
+			CREATE PROCEDURE B_P_C_CONFIG_PAGE_ALL
+			(
+				@PAGE_CODE nvarchar(50)
+			)
+			AS
+			BEGIN
+
+			DECLARE @BackJSON varchar(MAX) 
+			DECLARE @LAYOUTJSON varchar(MAX) 
+			DECLARE @PAGEJSON varchar(MAX) 
+
+			DECLARE @_PAGE_ID nvarchar(50) 
+			DECLARE @_PAGE_IDS varchar(MAX) 
+
+			DECLARE @_IS_REF_PAGE int 
+			DECLARE @_REF_PAGE_CODE nvarchar(50) 
+
+
+			SELECT @_IS_REF_PAGE = P.IS_REF_PAGE,@_REF_PAGE_CODE=REF_PAGE_CODE  FROM  SMT_SETTING_PAGE P
+			WHERE P.CODE=@PAGE_CODE;
+
+			-- 引用页读取引用页标识
+			IF(@_IS_REF_PAGE=1)
+			BEGIN
+			   SET @PAGE_CODE = @_REF_PAGE_CODE;
+			END
+
+
+			SET @BackJSON='{';
+
+			   --申明一个游标
+				DECLARE MyCursor CURSOR LOCAL    
+					FOR 
+					
+					
+					SELECT top 1 PAGE_CODE, PAGE_JSON FROM  SMT_SETTING_LAYOUT 
+					WHERE PAGE_CODE = @PAGE_CODE and STATE =1
+
+
+				--打开一个游标    
+				OPEN MyCursor
+
+				--循环一个游标
+				DECLARE @ID nvarchar(50), @JSONVALUE nvarchar(MAX),@PAGE_JSON varchar(MAX) 
+					FETCH NEXT FROM  MyCursor INTO @ID,@PAGE_JSON
+				WHILE @@FETCH_STATUS =0
+					BEGIN
+					
+					 IF(@PAGE_JSON IS NOT NULL OR @PAGE_JSON!='')
+					 BEGIN
+						   SET @BackJSON = @BackJSON+ ' "'+@ID+'":'+@PAGE_JSON+',' 
+					 END
+					
+					 
+						FETCH NEXT FROM  MyCursor INTO @ID,@PAGE_JSON
+					END    
+
+				--关闭游标
+				CLOSE MyCursor
+				--释放资源
+				DEALLOCATE MyCursor
+
+				
+				  IF LEN(@BackJSON)>1
+				  SET @BackJSON=SubString(@BackJSON,0,LEN(@BackJSON));
+
+				   SET @BackJSON = @BackJSON+ '}' 
+
+				select  @BackJSON as w
+
+
+			END
+		]]>
+	</procedure>
+</mapping-configuration>

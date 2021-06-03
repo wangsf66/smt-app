@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+<property  supportCover="false" supportDelete="false" extend="{'type':2,'params':[]}"/>
+<sql namespace="GET_GROUP_LIST">
+<content name="ec131503-cf27-4b48-827b-edebad468537" type="select">
+SELECT 
+ ID,
+ PARENT_ID,
+ [TYPE],
+ CODE,
+ NAME + CASE [TYPE] WHEN 1 THEN ' [公司]' WHEN 2 THEN ' [部门]' END AS NAME,
+ [DESCRIPTION],
+ PROJECT_CODE,
+ TENANT_ID
+FROM SMT_BASE.dbo.BASE_ORG WHERE IS_DELETED=0 WITH (NOLOCK)
+</content>
+</sql>
+</mapping-configuration>

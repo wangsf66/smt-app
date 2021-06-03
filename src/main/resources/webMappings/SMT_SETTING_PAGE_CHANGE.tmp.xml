@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+	<table name="SMT_SETTING_PAGE_CHANGE" createMode="create" strict="true">
+		<columns>
+			<column name="ID" dataType="char" length="36" />
+			<column name="CREATE_USER_ID" dataType="char" length="36" nullable="false" />
+			<column name="CREATE_DATE" dataType="datetime" nullable="false" />
+			<column name="PROJECT_CODE" dataType="string" length="50" nullable="false" />
+			<column name="TENANT_ID" dataType="char" length="36" nullable="false" />
+
+			<column name="LAYOUT_ID" dataType="string" length="30"    nullable="true"/>
+			<column name="ORIGIN_CONFIG_JSON" dataType="clob" nullable="true"/>
+			<column name="ORIGIN_JSON" dataType="clob" nullable="true"/>
+			<column name="CURRENT_CONFIG_JSON" dataType="clob"    nullable="true"/>
+			<column name="CURRENT_JSON" dataType="clob"   nullable="true"/>
+			<column name="CHANGE_TYPE" dataType="string" length="50"    nullable="true"/>
+			<column name="CHANGE_CONTENT" dataType="string" length="36"    nullable="true"/>
+		</columns>
+		<constraints>
+			<constraint type="PRIMARY_KEY"> 
+				<column name="ID" /> 
+			</constraint> 
+		</constraints>
+	</table>
+</mapping-configuration>

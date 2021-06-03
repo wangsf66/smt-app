@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+<property  supportCover="false" supportDelete="false" extend="{'type':2,'params':['ROLE_CODE']}"/>
+<sql namespace="GET_MENU_AUTH_TREE">
+<content name="12338b64-bc04-4ce4-9019-44df4bd0fdeb" type="select">
+SELECT
+	A.ID,
+	CASE 
+		WHEN A.MENU_LEVEL = 1 THEN A.MENU_NAME + '_[菜单]'
+		WHEN (A.MENU_LEVEL = 2 AND A.MENU_TYPE = 999) THEN A.MENU_NAME + '_[主页]'
+		WHEN (A.MENU_LEVEL = 2 AND A.MENU_TYPE != 999) THEN A.MENU_NAME + '_[分类]'
+		WHEN (A.MENU_LEVEL = 3 AND A.MENU_TYPE != 999) THEN A.MENU_NAME + '_[主页]'
+	END AS NAME,
+	A.MENU_ICON AS ICON,
+	A.MENU_CODE AS CODE,
+	A.MENU_PARENT_ID AS PID,
+	A.MENU_STATUS AS [STATUS],
+	A.MENU_LEVEL AS LEVEL,
+	CASE 
+		WHEN A.MENU_LEVEL = 1 THEN 'root'
+		WHEN (A.MENU_LEVEL = 2 AND A.MENU_TYPE = 999) THEN 'child'
+		WHEN (A.MENU_LEVEL = 2 AND A.MENU_TYPE != 999) THEN 'category'
+		WHEN (A.MENU_LEVEL = 3 AND A.MENU_TYPE != 999) THEN 'child'
+	END AS NODE_TYPE,
+	CASE 
+		WHEN A.MENU_STATUS = 1 THEN '未启用'
+		WHEN A.MENU_STATUS = 2 THEN '已启用'
+	END AS STATUS_TEXT,
+	B.AUPE_ID,
+	ISNULL(B.AUFU_R_ALLOW,0) + ISNULL(B.AUFU_R_NOT_ALLOW,0) AS AUFU_READ,
+	B.AUFU_W_ALLOW + B.AUFU_W_NOT_ALLOW AS AUFU_WRITE,
+	ISNULL(B.AUFU_AUTH_ALLOW,0) + ISNULL(B.AUFU_AUTH_NOT_ALLOW,0) AS AUFU_AUTH,
+	B.AUFU_ENABLE_PERMISSION,
+	B.AUFU_WEIGHT,
+	B.AUFU_STATE,
+	B.AUFU_REF_OBJ_ID,
+	B.ID AS AUFU_ID
+FROM SmartOne2_VC.dbo.SMT_MENU AS A WITH (NOLOCK) 
+LEFT JOIN 
+(
+SELECT F.* FROM SmartOne2_VC.dbo.SMT_AUTH_MENU AS F
+LEFT JOIN SmartOne2_VC.dbo.SMT_AUTH_PERMISSION AS AU
+ON F.AUPE_ID = AU.ID
+-- WHERE AU.AUPE_REF_OBJ_ID = '3563CE02-F747-47CE-AE8E-95F41B53E514' AND AU.AUPE_AUTH_TYPE = 'menu'
+WHERE AU.AUPE_REF_OBJ_ID = $ROLE_CODE$ AND AU.AUPE_AUTH_TYPE = 'menu'
+) B  ON A.ID = B.AUFU_REF_OBJ_ID
+/* WHERE MENU_TYPE &lt;&gt; 999 */
+</content>
+</sql>
+<validators>
+<validator name="ROLE_CODE"  enableNotNull="true" enableDataType="true"  /> 
+</validators>
+</mapping-configuration>

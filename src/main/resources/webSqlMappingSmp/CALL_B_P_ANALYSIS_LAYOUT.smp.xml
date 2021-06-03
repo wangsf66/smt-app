@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+	<property  supportCover="false" supportDelete="false" extend="{'type':1,'results':[],'params':['LAYOUTID','LAYOUTJSON','PROJECT_CODE','TENANT_ID','CREATE_USER_ID']}" />
+	<sql namespace="CALL_B_P_ANALYSIS_LAYOUT">
+		<content name="d6f01edc-1c59-4395-95db-7e17137430e7" type="procedure">
+			{call B_P_ANALYSIS_LAYOUT(
+				$LAYOUTID|dbType=VARCHAR|length=50|mode=in|nullable=true$,
+				$LAYOUTJSON|dbType=VARCHAR|mode=in|nullable=true$,
+				$PROJECT_CODE|dbType=VARCHAR|defaultValue=_projectCode|mode=in|nullable=true$,
+				$TENANT_ID|dbType=CHAR|defaultValue=_tenantId|mode=in|nullable=true$,
+				$CREATE_USER_ID|dbType=CHAR|defaultValue=_userId|mode=in|nullable=true$)}
+		</content>
+	</sql>
+</mapping-configuration>

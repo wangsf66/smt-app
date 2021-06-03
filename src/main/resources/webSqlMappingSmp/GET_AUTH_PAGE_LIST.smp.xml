@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+<property  supportCover="false" supportDelete="false" extend="{'type':2,'params':['MENU_ID','MENU_CODE','OBJ_REF']}"/>
+<sql namespace="GET_AUTH_PAGE_LIST">
+<content name="2f84f3ac-2776-492c-8f55-e2e2abc76735" type="select">
+SELECT
+	B.ID, 
+	' [布局] ' + A.NAME AS NAME,
+	A.[VERSION],
+	B.PAGE_CODE,
+	B.MENU_CODE,
+	B.MENU_PAGE_ORDER,
+	B.MENU_PAGE_ENABLED,
+	CASE B.MENU_PAGE_ENABLED
+	WHEN 2 THEN '启用'
+	WHEN 1 THEN '禁用'
+	END AS MENU_PAGE_ENABLED_TEXT,
+	B.PARENT_ID,
+	P.AUPA_READ,
+	P.AUFU_ID,
+	P.SYS_AUTH_PAGE_ID,
+	P.AUPE_ID,
+	P.AUPA_AUTH,
+	CASE ISNULL(P.AUPA_READ,0)
+		WHEN 1 THEN '可见'
+		WHEN 2 THEN '不可见'
+		WHEN 0 THEN '未设置'
+		END AS AUPA_READ_TEXT,
+	CASE ISNULL(P.AUPA_AUTH,0)
+		WHEN 1 THEN '可授权'
+		WHEN 2 THEN '禁止授权'
+		WHEN 0 THEN '未设置'
+		END AS AUPA_AUTH_TEXT
+FROM 
+SmartOne2_VC.dbo.SMT_SETTING_LAYOUT AS A WITH (NOLOCK)
+INNER JOIN
+SmartOne2_VC.dbo.SMT_MENU_PAGE_REL AS B WITH (NOLOCK)
+ON A.PAGE_CODE = B.PAGE_CODE
+LEFT JOIN(
+	 SELECT
+	 F.ID as AUFU_ID,
+	 C.AUPA_REF_OBJ_ID,
+	 ISNULL(C.AUPA_R_ALLOW,0) + ISNULL(C.AUPA_R_NOT_ALLOW ,0) AS AUPA_READ,
+	 ISNULL(C.AUPA_AUTH_ALLOW,0) + ISNULL(C.AUPA_AUTH_NOT_ALLOW ,0) AS AUPA_AUTH,
+	 C.ID AS SYS_AUTH_PAGE_ID,
+     C.AUPE_ID
+	 FROM SmartOne2_VC.dbo.SMT_AUTH_PAGE  C
+       LEFT JOIN SmartOne2_VC.dbo.SMT_AUTH_PERMISSION  P on P.ID = c.AUPE_ID AND P.AUPE_AUTH_TYPE = 'menu'
+       LEFT JOIN SmartOne2_VC.dbo.SMT_AUTH_MENU F on C.AUPE_ID = F.AUPE_ID  AND F.AUFU_REF_OBJ_ID = C.MENU_ID
+     WHERE C.MENU_ID = $MENU_ID$ and P.AUPE_REF_OBJ_ID = $OBJ_REF$
+) AS P
+ON P.AUPA_REF_OBJ_ID = B.ID 
+WHERE B.PARENT_ID IS NULL AND B.MENU_CODE = $MENU_CODE$
+</content>
+</sql>
+<validators>
+<validator name="MENU_ID"  enableNotNull="true" enableDataType="true"  /> 
+<validator name="MENU_CODE"  enableNotNull="true" enableDataType="true"  /> 
+<validator name="OBJ_REF"  enableNotNull="true" enableDataType="true"  /> 
+</validators>
+</mapping-configuration>

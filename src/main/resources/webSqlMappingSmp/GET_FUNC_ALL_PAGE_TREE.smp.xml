@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+<property  supportCover="false" supportDelete="false" extend="{'type':2,'params':[]}"/>
+<sql namespace="GET_FUNC_ALL_PAGE_TREE">
+<content name="e1e3633d-b424-4045-8ebd-e25ed8b6035b" type="select">
+SELECT 
+    ID,
+    PID,
+    NAME + ' [功能]' AS NAME,
+    CODE,
+    0 AS NODE_TYPE
+FROM SMT_SETTING_FUNC WITH (NOLOCK)
+UNION 
+SELECT 
+    ID,
+    PID,
+	CASE PAGE_TYPE WHEN 1 THEN  NAME + ' [主页]' WHEN 2 THEN NAME + ' [子页]' END AS NAME,
+    CODE,
+    PAGE_TYPE
+FROM SMT_SETTING_PAGE WITH(NOLOCK)
+</content>
+</sql>
+</mapping-configuration>

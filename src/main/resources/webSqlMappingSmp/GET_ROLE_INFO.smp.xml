@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+<property  supportCover="false" supportDelete="false" extend="{'type':2,'params':[]}"/>
+<sql namespace="GET_ROLE_INFO">
+<content name="7381cbe0-6a29-4c4a-9a30-1c0774001a10" type="select">
+SELECT
+ ID,
+ NAME,
+ CODE,
+ [DESCRIPTION],
+ PROJECT_CODE,
+ TENANT_ID
+FROM SMT_BASE.dbo.BASE_ROLE WHERE IS_DELETED=0
+
+</content>
+</sql>
+</mapping-configuration>

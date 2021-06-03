@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+<property supportCover="true" supportDelete="true" extendExpr="{'type':2,'params':[]}"/>
+<sql namespace="GET_SMT_PAGE_LAYOUT_TREE">
+<content name="6b6a9142-f5d8-4447-8d3d-b51262fed08b" type="select">
+SELECT 
+	ID,
+	ID AS FUNC_ID,
+	NAME+' [功能]' as NAME,
+	NULL AS PID,
+	'FUNC' AS TYPE
+FROM SMT_SETTING_FUNC WITH (NOLOCK)
+UNION ALL
+SELECT
+	ID,
+	FUNC_ID,
+	NAME+' [页面]' AS NAME,
+	PID,
+	'PAGE' AS TYPE
+FROM SMT_SETTING_PAGE WITH (NOLOCK)
+UNION ALL
+SELECT
+	ID,
+	PAGE_ID AS FUNC_ID,
+	NAME+' [布局]' AS NAME,
+	PAGE_ID AS PID,
+	'LAYOUT' AS TYPE
+FROM SMT_SETTING_LAYOUT WITH (NOLOCK)
+</content>
+</sql>
+</mapping-configuration>

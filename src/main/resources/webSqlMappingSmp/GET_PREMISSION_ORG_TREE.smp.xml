@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+<property  supportCover="false" supportDelete="fasle" extend="{'type':2,'params':['AFFERENT_ID']}"/>
+<sql namespace="GET_PREMISSION_ORG_TREE">
+<content name="d9960ba2-92bd-4818-a7dd-ffaf1b0ff0e6" type="select">
+SELECT 
+  D.ID,
+  PARENT_ID,
+  TYPE,
+  NAME,
+  CASE TYPE WHEN 1 THEN '启用'
+  WHEN 2 THEN '未启用' END AS TYPE_TEXT,
+  ISNULL (AUTH.AUDA_R_ALLOW,0) + ISNULL(AUTH.AUDA_R_NOT_ALLOW, 0) AS R_ALLOW,
+  ISNULL (AUTH.AUDA_W_ALLOW,0) + ISNULL(AUTH.AUDA_W_NOT_ALLOW, 0) AS W_ALLOW,
+  ISNULL (AUTH.AUDA_AUTH_ALLOW,0) + ISNULL(AUTH.AUDA_AUTH_NOT_ALLOW, 0) AS AUTH_ALLOW
+FROM SMT_BASE.dbo.BASE_ORG D WITH (NOLOCK) 
+LEFT JOIN (
+SELECT
+  ID,
+  AUDA_LEFT_ID,
+  AUDA_RIGHT_ID,
+  AUDA_R_ALLOW,
+  AUDA_R_NOT_ALLOW,
+  AUDA_W_ALLOW,
+  AUDA_W_NOT_ALLOW,
+  AUDA_AUTH_ALLOW,
+  AUDA_AUTH_NOT_ALLOW  
+FROM SmartOne2_VC.dbo.SMT_AUTH_DATA WHERE AUDA_LEFT_ID = $AFFERENT_ID$) AUTH
+ON AUTH.AUDA_RIGHT_ID = D.ID
+</content>
+</sql>
+<validators>
+<validator name="AFFERENT_ID"  enableNotNull="true" enableDataType="true"  /> 
+</validators>
+</mapping-configuration>

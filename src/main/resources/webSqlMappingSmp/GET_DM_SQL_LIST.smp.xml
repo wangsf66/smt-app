@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+<property  supportCover="false" supportDelete="false" extend="{'type':2,'params':[]}"/>
+<sql namespace="GET_DM_SQL_LIST">
+<content name="d1a6b3e0-8341-4ea8-9ea8-790b2f6a86df" type="select">
+
+SELECT
+    A.ID,
+    A.DESC_NAME AS NAME,
+    A.RESOURCE_NAME AS SNAME,
+    A.IS_BUILD_MODEL,
+    CASE A.IS_BUILD_MODEL 
+        WHEN 0 THEN '未发布' 
+        WHEN 1 THEN '已发布' 
+        WHEN 2 THEN '变更发布' END  
+        AS IS_BUILD_MODEL_TEXT,
+    A.CREATE_DATE,
+    A.RESOURCE_NAME+'('+A.DESC_NAME+')' AS SQL_NAME,
+    A.FUNC_CODE
+FROM DM_RESOURCE A WITH (NOLOCK) WHERE RESOURCE_TYPE IN(15,20)
+</content>
+</sql>
+</mapping-configuration>

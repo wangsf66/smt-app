@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping-configuration>
+	<property  supportCover="false" supportDelete="false" extend="{'type':1,'results':[],'params':['ALLOW_RESULT','AUTH_FLAG','REF_MAIN_PAGE_ID','MESSAGE','BUTTON_IDS','REF_PAGE_ID','PROJECT_CODE','TENANT_ID','MESSAGE_TYPE','CREATE_USER_ID','CREATE_DATE','REF_LAYOUT_ID','MENU_CODE','AUPE_ID']}" />
+	<sql namespace="CALL_SET_OPERATION_AUTH_STATE_PROC">
+		<content name="896d6a82-c298-4370-ab8d-900bd376baa1" type="procedure">
+			{call SET_OPERATION_AUTH_STATE_PROC(
+				$AUPE_ID|dbType=VARCHAR|length=36|mode=in|nullable=true$,
+				$BUTTON_IDS|dbType=VARCHAR|mode=in|nullable=true$,
+				$REF_MAIN_PAGE_ID|dbType=VARCHAR|length=36|mode=in|nullable=true$,
+				$REF_PAGE_ID|dbType=VARCHAR|length=36|mode=in|nullable=true$,
+				$REF_LAYOUT_ID|dbType=VARCHAR|length=36|mode=in|nullable=true$,
+				$MENU_CODE|dbType=VARCHAR|length=36|mode=in|nullable=true$,
+				$AUTH_FLAG|dbType=INT|mode=in|nullable=true$,
+				$CREATE_USER_ID|dbType=CHAR|defaultValue=_userId|mode=in|nullable=true$,
+				$CREATE_DATE|defaultValue=_currentTime|dbType=DATETIME|mode=in|nullable=true$,
+				$PROJECT_CODE|dbType=VARCHAR|defaultValue=_projectCode|mode=in|nullable=true$,
+				$TENANT_ID|dbType=CHAR|defaultValue=_tenantId|mode=in|nullable=true$,
+				$ALLOW_RESULT|dbType=INT|mode=out|nullable=false$,
+				$MESSAGE|dbType=VARCHAR|length=50|mode=out|nullable=false$,
+				$MESSAGE_TYPE|dbType=VARCHAR|length=20|mode=out|nullable=false$)}
+		</content>
+	</sql>
+</mapping-configuration>
